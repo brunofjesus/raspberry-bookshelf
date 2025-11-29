@@ -1,0 +1,7 @@
+{
+  "componentsDir": "internal/frontend/templates/components",
+  "utilsDir": "internal/frontend/utils",
+  "moduleName": "github.com/brunofjesus/raspberry-bookshelf",
+  "jsDir": "static/js",
+  "jsPublicPath": "static/js"
+}

@@ -1,0 +1,46 @@
+package modules
+
+import "fmt"
+import "github.com/brunofjesus/raspberry-bookshelf/internal/frontend/templates/components/icon"
+import "github.com/brunofjesus/raspberry-bookshelf/internal/frontend/templates/components/button"
+
+templ Navbar(currentCategory string, categories []string) {
+	<nav class="border-b py-3">
+		<div class="container mx-auto px-4 flex justify-between items-center">
+			<div class="flex items-center gap-6">
+				<a href="/" class="flex items-center">
+					<img src="/static/image/logo.svg" alt="Bookshelf" class="h-8"/>
+				</a>
+				<div class="flex gap-4">
+					if currentCategory == "" || currentCategory == "All" {
+						<a href="/" class="nav-link-active transition-colors">All</a>
+					} else {
+						<a href="/" class="hover:text-primary transition-colors">All</a>
+					}
+					for _, cat := range categories {
+						if currentCategory == cat {
+							<a href={ fmt.Sprintf("?cat=%s", cat) } class="nav-link-active transition-colors">{ cat }</a>
+						} else {
+							<a href={ fmt.Sprintf("?cat=%s", cat) } class="hover:text-primary transition-colors">{ cat }</a>
+						}
+					}
+				</div>
+			</div>
+			<div class="flex items-center gap-4">
+				<ul class="flex gap-4 mr-4">
+					<li>
+						@button.Button(button.Props{
+							Variant: button.VariantLink,
+							Href:    "http://github.com/brunofjesus/raspberry-bookshelf",
+							Target:  "_blank",
+						}) {
+							@icon.Github()
+							GitHub	
+						}
+					</li>
+				</ul>
+				@ThemeSwitcher(ThemeSwitcherProps{})
+			</div>
+		</div>
+	</nav>
+}

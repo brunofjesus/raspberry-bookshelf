@@ -1,0 +1,57 @@
+package templates
+
+import (
+  modules "github.com/brunofjesus/raspberry-bookshelf/internal/frontend/templates/modules"
+	"github.com/brunofjesus/raspberry-bookshelf/internal/frontend/templates/components/dialog"
+)
+
+templ themeSwitcherScript() {
+<script>
+  // Initial theme setup
+  document.documentElement.classList.toggle('dark', localStorage.getItem('appTheme') === 'dark');
+
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('themeHandler', () => ({
+      isDark: localStorage.getItem('appTheme') === 'dark',
+      themeClasses() {
+        return this.isDark ? 'text-white' : 'bg-white text-black'
+      },
+      toggleTheme() {
+        this.isDark = !this.isDark;
+        localStorage.setItem('appTheme', this.isDark ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', this.isDark);
+      }
+    }))
+  })
+</script>
+}
+
+templ header(title string) {
+	<head>
+		<title>{ title }</title>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="description" content="FlexMeet is a simple web application to schedule meetings"/>
+		<script src="/static/js/htmx.min.js"></script>
+		<!--<script src="/static/js/response-targets.js"></script>-->
+		<script src="/static/js/alpine.min.js" defer ></script>
+		<link rel="stylesheet" href="/static/css/output.css"/>
+		@themeSwitcherScript()
+    @dialog.Script()
+	</head>
+}
+
+templ footer() {
+	<footer class="bg-primary-600 p-4"></footer>
+}
+
+templ Layout(contents templ.Component, title, currentCategory string, categories []string) {
+	@header(title)
+	<body x-data="themeHandler" x-bind:class="themeClasses" class="flex flex-col h-full">
+		@modules.Navbar(currentCategory, categories)
+		<main id="main" class="container mx-auto min-h-[calc(100vh-6.25rem)]">
+			@contents
+		</main>
+		@footer()
+	</body>
+}

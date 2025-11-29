@@ -1,0 +1,48 @@
+package modules
+
+import "github.com/brunofjesus/raspberry-bookshelf/internal/entities"
+import "github.com/brunofjesus/raspberry-bookshelf/internal/frontend/templates/components/dialog"
+import "github.com/brunofjesus/raspberry-bookshelf/internal/frontend/templates/components/button"
+import "github.com/brunofjesus/raspberry-bookshelf/internal/frontend/templates/components/icon"
+
+templ BookInfo(b *entities.Book) {
+	// Dialog defined separately
+	@dialog.Dialog(dialog.Props{
+		ID: "dialog",
+	}) {
+		@dialog.Content(dialog.ContentProps{
+			Class: "max-w-md",
+		}) {
+			@dialog.Header() {
+				@dialog.Title() {
+					{ b.Title }
+				}
+				@dialog.Description() {
+					<div class="book-dialog-content flex gap-4">
+						<img src={ b.Cover } alt={ b.Title } 
+            class="book-cover flex-shrink-0 w-32 h-auto"/>
+						<p class="desc flex-1">
+							{ b.Description }
+						</p>
+					</div>
+				}
+			}
+			@dialog.Footer() {
+				@button.Button(button.Props{
+          Variant: button.VariantDefault,
+          Href: b.Link,
+        }) {
+          @icon.Download()
+					Download
+				}
+				@dialog.Close() {
+					@button.Button(button.Props{
+            Variant: button.VariantSecondary,
+          }) {
+						Close
+					}
+				}
+			}
+		}
+	}
+}

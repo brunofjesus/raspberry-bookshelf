@@ -1,0 +1,37 @@
+package modules
+
+import "github.com/brunofjesus/raspberry-bookshelf/internal/entities"
+import "fmt"
+
+templ Books(books []entities.Book) {
+  <div class="books-grid">
+    for _, b := range books {
+      @book(b)
+    }
+  </div>
+  <div id="dialog"></div>
+  <script>
+    document.addEventListener('htmx:afterRequest', function(evt) {
+      console.log("afterRequest", evt)
+      if (evt.detail.xhr.status != 200) {
+        console.log("Ignoring status != 200")
+        return
+      }
+      if (evt.detail.target.id == "dialog") {
+        console.log("Opening dialog");
+        window.tui.dialog.open("dialog");
+      }
+    })
+  </script>
+}
+
+templ book(book entities.Book) {
+  <a 
+  class="book-item flex flex-col items-center" 
+  hx-target="#dialog"
+  hx-swap="outerHTML"
+  hx-get={fmt.Sprintf("/module/book/%s", book.ID)}>
+    <img src={book.Cover} alt={book.Title} class="book-cover"></img>
+    <h3 class="book-title text-sm text-center mt-2 px-1 line-clamp-2">{book.Title}</h3>
+  </a>
+}
