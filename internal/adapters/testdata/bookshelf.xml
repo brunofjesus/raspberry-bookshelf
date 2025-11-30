@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PUBS>
+  <MAGPI>
+    <NAME>The _Magpi</NAME>
+    <URL>https://magpi.raspberrypi.com/issues</URL>
+    <ITEM>
+      <TITLE>MagPI Locked Mag 1</TITLE>
+      <DESC>Description for MagPi Mag 1</DESC>
+      <COVER>http://localhost/covers/1</COVER>
+      <FILE>RPOM160-1.pdf</FILE>
+    </ITEM>
+    <ITEM>
+      <TITLE>MagPI Available Mag 2</TITLE>
+      <DESC>Description for the MagPI Available Mag 2</DESC>
+      <COVER>http://localhost/covers/2</COVER>
+      <PDF>http://localhost/magpi/2</PDF>
+    </ITEM>
+    <ITEM>
+      <TITLE>MagPI Available Mag 3</TITLE>
+      <DESC>Description for the MagPI Available Mag 3</DESC>
+      <COVER>http://localhost/covers/3</COVER>
+      <PDF>http://localhost/magpi/3</PDF>
+    </ITEM>
+  </MAGPI>
+  <BOOKS>
+    <NAME>_Books</NAME>
+    <URL>https://magpi.raspberrypi.com/books</URL>
+    <ITEM>
+      <TITLE>Some non available book yet</TITLE>
+      <DESC>This is a forbidden book</DESC>
+      <COVER>http://localhost/covers/4</COVER>
+      <FILE>Book_of_Making_2026.pdf</FILE>
+    </ITEM>
+    <ITEM>
+      <TITLE>Available Book 1</TITLE>
+      <DESC>Description for the Available Book 1</DESC>
+      <COVER>http://localhost/covers/book1</COVER>
+      <PDF>http://localhost/book/1</PDF>
+    </ITEM>
+  </BOOKS>
+</PUBS>

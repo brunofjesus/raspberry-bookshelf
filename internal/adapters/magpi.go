@@ -10,11 +10,10 @@ import (
 	"github.com/brunofjesus/raspberry-bookshelf/internal/entities"
 )
 
-const magPiBookShelfURL = "https://magpi.raspberrypi.com/bookshelf.xml"
-
 // MagPiAPI is an adapter for fetching MagPi books and magazines.
 type MagPiAPI struct {
-	httpClient http.Client
+	httpClient        *http.Client
+	magPiBookShelfURL string
 }
 
 // BookshelfXML represents the structure of the MagPi bookshelf XML response.
@@ -57,7 +56,8 @@ func NewMagPiAPI() *MagPiAPI {
 	}
 
 	return &MagPiAPI{
-		httpClient: client,
+		httpClient:        &client,
+		magPiBookShelfURL: "https://magpi.raspberrypi.com/bookshelf.xml",
 	}
 }
 
@@ -65,7 +65,7 @@ func NewMagPiAPI() *MagPiAPI {
 // It returns a slice of Book entities or an error if the operation fails.
 // The function uses concurrency to process magazines and books in parallel.
 func (m *MagPiAPI) GetBooks(ctx context.Context) ([]entities.Book, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, magPiBookShelfURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, m.magPiBookShelfURL, nil)
 	if err != nil {
 		return nil, err
 	}
