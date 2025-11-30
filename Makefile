@@ -70,16 +70,6 @@ templ-watch:
 templ-generate:
 	@templ generate
 	
-# Build the application
-.PHONY: build
-build:
-	@echo "Tailwind CSS build..."
-	@make tailwind-build
-	@echo "Compiling templ templates..."
-	@make templ-generate
-	@echo "Building application..."
-	@go build -ldflags "-X main.Environment=production" -o ./bin/app ./cmd/main.go
-
 # Build Docker image
 .PHONY: docker-build
 docker-build:
@@ -96,3 +86,24 @@ docker-run:
 clean:
 	@echo "Cleaning build artifacts..."
 	@rm -rf ./bin
+
+.PHONY: build
+build:
+	@echo "Building application..."
+	go build -o ./bin/app ./cmd/main.go
+
+.PHONY: build-all
+build-all:
+	@echo "Tailwind CSS build..."
+	@make tailwind-build
+	@echo "Compiling templ templates..."
+	@make templ-generate
+	@echo "Building application on all platforms..."
+	GOOS=windows GOARCH=amd64 go build -o ./bin/bookshelf_win_x64.exe ./cmd/main.go
+	GOOS=windows GOARCH=386 go build -o ./bin/bookshelf_win_x86.exe ./cmd/main.go
+	GOOS=darwin GOARCH=amd64 go build -o ./bin/bookshelf_mac_intel ./cmd/main.go
+	GOOS=darwin GOARCH=arm64 go build -o ./bin/bookshelf_mac_silicon ./cmd/main.go
+	GOOS=linux GOARCH=386 go build -o ./bin/bookshelf_linux_386 ./cmd/main.go
+	GOOS=linux GOARCH=amd64 go build -o ./bin/bookshelf_linux_amd64 ./cmd/main.go
+	GOOS=linux GOARCH=arm64 go build -o ./bin/bookshelf_linux_arm64 ./cmd/main.go
+
