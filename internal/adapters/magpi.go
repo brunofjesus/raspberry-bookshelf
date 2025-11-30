@@ -12,15 +12,19 @@ import (
 
 const magPiBookShelfURL = "https://magpi.raspberrypi.com/bookshelf.xml"
 
+// MagPiAPI is an adapter for fetching MagPi books and magazines.
 type MagPiAPI struct {
 	httpClient http.Client
 }
 
+// BookshelfXML represents the structure of the MagPi bookshelf XML response.
 type BookshelfXML struct {
 	MagPi []BookshelfItem `xml:"MAGPI>ITEM"`
 	Books []BookshelfItem `xml:"BOOKS>ITEM"`
 }
 
+// BookshelfItem represents a single item (book or magazine) in the MagPi bookshelf.
+// The Category field is set manually after unmarshalling.
 type BookshelfItem struct {
 	Title       string `xml:"TITLE"`
 	Description string `xml:"DESC"`
@@ -30,10 +34,12 @@ type BookshelfItem struct {
 	Category    string
 }
 
+// IsLocked checks if the item is locked (i.e., does not have a PDF link).
 func (i *BookshelfItem) IsLocked() bool {
 	return i.PDF == ""
 }
 
+// ToBookEntity converts a BookshelfItem to an entities.Book.
 func (i *BookshelfItem) ToBookEntity() entities.Book {
 	return entities.Book{
 		Title:       i.Title,
@@ -44,6 +50,7 @@ func (i *BookshelfItem) ToBookEntity() entities.Book {
 	}
 }
 
+// NewMagPiAPI creates a new instance of MagPiAPI with a configured HTTP client.
 func NewMagPiAPI() *MagPiAPI {
 	client := http.Client{
 		Timeout: 10 * time.Second,
@@ -54,6 +61,9 @@ func NewMagPiAPI() *MagPiAPI {
 	}
 }
 
+// GetBooks fetches the list of MagPi books and magazines from the MagPi API.
+// It returns a slice of Book entities or an error if the operation fails.
+// The function uses concurrency to process magazines and books in parallel.
 func (m *MagPiAPI) GetBooks(ctx context.Context) ([]entities.Book, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, magPiBookShelfURL, nil)
 	if err != nil {

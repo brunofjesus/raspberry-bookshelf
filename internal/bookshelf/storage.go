@@ -14,12 +14,14 @@ import (
 	"github.com/brunofjesus/raspberry-bookshelf/internal/entities"
 )
 
+// Storage is an in-memory storage for books.
 type Storage struct {
 	books           []entities.Book
 	bookIDMap       map[string]*entities.Book
 	bookCategoryMap map[string][]entities.Book
 }
 
+// NewStorage creates a new instance of Storage.
 func NewStorage() *Storage {
 	return &Storage{
 		books:           []entities.Book{},
@@ -28,11 +30,13 @@ func NewStorage() *Storage {
 	}
 }
 
+// GetByID retrieves a book by its ID.
 func (s *Storage) GetByID(ctx context.Context, id string) (*entities.Book, error) {
 	book := s.bookIDMap[id]
 	return book, nil
 }
 
+// Get retrieves books, optionally filtered by category.
 func (s *Storage) Get(ctx context.Context, category string) ([]entities.Book, error) {
 	if len(category) > 0 {
 		slog.Debug("getting books in category", slog.String("category", category))
@@ -41,6 +45,7 @@ func (s *Storage) Get(ctx context.Context, category string) ([]entities.Book, er
 	return s.books, nil
 }
 
+// GetCategories retrieves all book categories.
 func (s *Storage) GetCategories(ctx context.Context) ([]string, error) {
 	result := []string{}
 	categories := maps.Keys(s.bookCategoryMap)
@@ -51,6 +56,7 @@ func (s *Storage) GetCategories(ctx context.Context) ([]string, error) {
 	return result, nil
 }
 
+// ReplaceAll replaces all books in storage with the provided list.
 func (s *Storage) ReplaceAll(ctx context.Context, books []entities.Book) error {
 	slog.Debug("replacing books", slog.Int("size", len(books)))
 	bookSlice := make([]entities.Book, 0, len(books))
@@ -73,6 +79,7 @@ func (s *Storage) ReplaceAll(ctx context.Context, books []entities.Book) error {
 	return nil
 }
 
+// genBookID generates a unique ID for the book if it doesn't already have one.
 func (s *Storage) genBookID(_ context.Context, book *entities.Book) error {
 	if book == nil {
 		return errors.New("book is required")

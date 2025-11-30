@@ -16,6 +16,9 @@ type (
 	}
 )
 
+// NewBookHandler creates a new BookHandler with the provided GetBookFn.
+// This handler is responsible for serving book details based on the book ID.
+// It returns a dialog that can be displayed on a page.
 func NewBookHandler(getBook GetBookFn) *BookHandler {
 	return &BookHandler{
 		getBookFn: getBook,

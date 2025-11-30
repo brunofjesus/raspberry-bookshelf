@@ -15,6 +15,10 @@ type (
 	}
 )
 
+// NewIndexHandler creates a new IndexHandler with the provided GetCategoriesFn.
+// This handler is responsible for serving the index page, which includes
+// the list of categories and highlights the current category if provided on the
+// NavBar.
 func NewIndexHandler(getCategories GetCategoriesFn) *IndexHandler {
 	return &IndexHandler{
 		getCategoriesFn: getCategories,

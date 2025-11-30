@@ -12,15 +12,21 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Runner defines an interface for components that can be run.
 type Runner interface {
 	Run(ctx context.Context) error
 }
 
+// Service represents the main application service.
+// It holds the data needed for the application to run.
 type Service struct {
 	bookUpdater Runner
 	bookStorage *bookshelf.Storage
 }
 
+// New creates a new instance of the Service.
+// It initializes the necessary components such as the book client,
+// book storage, and book updater.
 func New() Service {
 	bookClient := adapters.NewMagPiAPI()
 	bookStorage := bookshelf.NewStorage()
@@ -37,6 +43,7 @@ func New() Service {
 	}
 }
 
+// Run starts the service, including the book updater and the HTTP web server.
 func (s Service) Run(ctx context.Context) error {
 	g, ctx := errgroup.WithContext(ctx)
 	g.Go(func() error {

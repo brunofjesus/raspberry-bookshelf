@@ -4,8 +4,6 @@ import (
 	"embed"
 	"net/http"
 
-	_ "embed"
-
 	"github.com/brunofjesus/raspberry-bookshelf/internal/frontend/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -14,6 +12,7 @@ import (
 //go:embed static
 var staticFs embed.FS
 
+// NewHTTPRouter creates a new HTTP router with the provided handler functions.
 func NewHTTPRouter(
 	getCategoriesFn handlers.GetCategoriesFn,
 	getBookFn handlers.GetBookFn,
