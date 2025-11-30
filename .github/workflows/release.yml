@@ -23,37 +23,10 @@ jobs:
     - name: Build all platforms
       run: make build-all
 
-    - name: Upload release assets
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          const path = require('path');
-          
-          // Get release info
-          const release = context.payload.release;
-          
-          // Read bin directory
-          const binDir = './bin';
-          const files = fs.readdirSync(binDir);
-          
-          // Filter files that start with 'bookshelf'
-          const bookshelfFiles = files.filter(file => file.startsWith('bookshelf'));
-          
-          // Upload each binary
-          for (const file of bookshelfFiles) {
-            const filePath = path.join(binDir, file);
-            const fileContent = fs.readFileSync(filePath);
-            
-            console.log(`Uploading ${file}...`);
-            
-            await github.rest.repos.uploadReleaseAsset({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              release_id: release.id,
-              name: file,
-              data: fileContent,
-            });
-            
-            console.log(`Successfully uploaded ${file}`);
-          }
+    - name: Upload binaries to release                                                           
+      uses: softprops/action-gh-release@v1                                                       
+      with:                                                                                      
+        files: ./bin/bookshelf*                                                                  
+      env:                                                                                       
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}                                                
+
