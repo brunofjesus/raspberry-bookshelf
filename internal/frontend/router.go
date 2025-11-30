@@ -1,12 +1,18 @@
 package frontend
 
 import (
+	"embed"
 	"net/http"
+
+	_ "embed"
 
 	"github.com/brunofjesus/raspberry-bookshelf/internal/frontend/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
+
+//go:embed static
+var staticFs embed.FS
 
 func NewHTTPRouter(
 	getCategoriesFn handlers.GetCategoriesFn,
@@ -18,15 +24,12 @@ func NewHTTPRouter(
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	fileServer := http.FileServer(http.Dir("./static"))
-	r.Handle("/static/*", http.StripPrefix("/static/", fileServer))
+	fileServer := http.FileServer(http.FS(staticFs))
+	r.Handle("/static/*", fileServer)
 
 	r.Get("/", handlers.NewIndexHandler(getCategoriesFn).ServeHTTP)
 	r.Get("/module/books", handlers.NewBooksHandler(getBooksFn).ServeHTTP)
 	r.Get("/module/book/{bookID}", handlers.NewBookHandler(getBookFn).ServeHTTP)
-	//	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-	//		w.Write([]byte("hello world"))
-	//	})
 
 	return r
 }

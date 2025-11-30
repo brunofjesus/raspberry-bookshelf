@@ -1,0 +1,11 @@
+services:
+  raspberry-bookshelf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: raspberry-bookshelf:latest
+    container_name: raspberry-bookshelf
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+

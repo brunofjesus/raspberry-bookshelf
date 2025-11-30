@@ -1,15 +1,20 @@
-# Install development dependencies
-.PHONY: install
-install:
-	@echo "Installing development dependencies..."
+# Install dependencies
+.PHONY: dependencies
+dependencies:
+	@echo "Installing dependencies..."
 	@go install github.com/a-h/templ/cmd/templ@latest
-	@go install github.com/air-verse/air@latest
+	@make dependency-tailwind
 	@echo "Dependencies installed successfully"
-	@make install-tailwind
+
+.PHONY: dev-dependencies
+dev-dependencies: dependencies
+	@echo "Installing development dependencies..."
+	@go install github.com/air-verse/air@latest
+	@echo "Development dependencies installed successfully"
 
 # Install Tailwind CSS based on machine architecture and OS
-.PHONY: install-tailwind
-install-tailwind:
+.PHONY: dependency-tailwind
+dependency-tailwind:
 	@echo "Installing Tailwind CSS..."
 	@mkdir -p ./bin
 	@OS=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
@@ -37,7 +42,7 @@ install-tailwind:
 
 .PHONY: tailwind-clean
 tailwind-clean:
-	@./bin/tailwindcss -i ./static/css/input.css -o ./static/css/output.css --clean
+	@./bin/tailwindcss -i ./internal/frontend/static/css/input.css -o ./internal/frontend/static/css/output.css --clean
 
 # Run the application with hot reload using air
 .PHONY: air
@@ -51,11 +56,11 @@ dev: tailwind-clean
 
 .PHONY: tailwind-watch
 tailwind-watch:
-	@./bin/tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
+	@./bin/tailwindcss -i ./internal/frontend/static/css/input.css -o ./internal/frontend/static/css/output.css --watch
 
 .PHONY: tailwind-build
 tailwind-build:
-	@./bin/tailwindcss -i ./static/css/input.css -o ./static/css/output.css
+	@./bin/tailwindcss -i ./internal/frontend/static/css/input.css -o ./internal/frontend/static/css/output.css
 
 .PHONY: templ-watch
 templ-watch:
@@ -74,6 +79,17 @@ build:
 	@make templ-generate
 	@echo "Building application..."
 	@go build -ldflags "-X main.Environment=production" -o ./bin/app ./cmd/main.go
+
+# Build Docker image
+.PHONY: docker-build
+docker-build:
+	@echo "Building Docker image..."
+	@docker build -t raspberry-bookshelf:latest .
+
+.PHONY: docker-run
+docker-run:
+	@echo "Running Docker image..."
+	@docker run --rm -it --name raspberry-bookshelf -p 8080:8080 raspberry-bookshelf:latest 
 
 # Clean build artifacts
 .PHONY: clean
